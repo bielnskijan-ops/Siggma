@@ -1,0 +1,907 @@
+/* ==========================================================================
+   KOZMINSKI ESCAPE: POLOWANIE NA ECTS
+   Oficjalny arkusz stylów CSS (Akademia Leona Koźmińskiego w Warszawie)
+   ========================================================================== */
+
+/* 1. Oficjalna paleta barw ALK i zmienne systemowe */
+:root {
+  --alk-navy: #002244;           /* Główny granat ALK */
+  --alk-dark-bg: #0a1128;        /* Ciemny granat tła */
+  --alk-gold: #f2a900;           /* Akcentowe złoto ALK */
+  --alk-gold-light: #ffc740;     /* Jasne złoto ALK */
+  --alk-blue-secondary: #004b87; /* Kolor uzupełniający */
+  
+  --alk-patio-emerald: #10b981;  /* Zielone Patio */
+  --alk-danger-red: #ef4444;     /* Kampania wrześniowa / zagrożenie */
+  --alk-glass-hud: rgba(0, 34, 68, 0.78);
+  --alk-glass-border: #f2a900;
+  --alk-gold-glow: rgba(242, 169, 0, 0.35);
+
+  --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-text: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Reset i ustawienia globalne */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--alk-dark-bg);
+  background-image: 
+    radial-gradient(circle at 10% 15%, rgba(0, 75, 135, 0.45) 0%, transparent 50%),
+    radial-gradient(circle at 90% 85%, rgba(16, 185, 129, 0.18) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(242, 169, 0, 0.08) 0%, transparent 55%),
+    linear-gradient(180deg, #050a18 0%, var(--alk-dark-bg) 100%);
+  color: #f8fafc;
+  font-family: var(--font-text);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: hidden;
+  padding: 8px;
+}
+
+/* Główny kontener gry */
+#game-app {
+  width: 100%;
+  max-width: 840px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+}
+
+/* ==========================================================================
+   2. Nowoczesny wygląd retro-arcade:
+      - Szklany HUD z efektem backdrop-filter: blur() i złotą ramką
+      - Pasek staminy z płynnym przejściem gradientowym
+   ========================================================================== */
+#game-hud {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr auto;
+  gap: 12px;
+  align-items: center;
+  background: var(--alk-glass-hud);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 2px solid var(--alk-glass-border);
+  border-radius: 14px;
+  padding: 10px 16px;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.6),
+    0 0 15px var(--alk-gold-glow),
+    inset 0 1px 0 rgba(255, 199, 64, 0.3);
+  position: relative;
+  z-index: 10;
+}
+
+/* Brand ALK & Status Lokacji */
+.hud-brand-zone {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.alk-badge {
+  background: linear-gradient(135deg, var(--alk-blue-secondary) 0%, var(--alk-navy) 100%);
+  border: 1.5px solid var(--alk-gold-light);
+  color: var(--alk-gold-light);
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 14px;
+  letter-spacing: 1.5px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 0 12px var(--alk-gold-glow);
+}
+
+.alk-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--alk-gold);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--alk-gold);
+  animation: pulse-dot 1.8s infinite ease-in-out;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(0.85); opacity: 0.6; }
+  50% { transform: scale(1.3); opacity: 1; }
+}
+
+.hud-location-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.hud-label {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.hud-value {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+/* Karty wskaźników ECTS & Stamina */
+.hud-card {
+  background: rgba(10, 17, 40, 0.7);
+  border: 1px solid rgba(242, 169, 0, 0.25);
+  border-radius: 10px;
+  padding: 6px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.hud-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.hud-target {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 13px;
+  color: var(--alk-gold-light);
+  text-shadow: 0 0 8px rgba(242, 169, 0, 0.4);
+}
+
+.hud-numeric {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 12px;
+  color: #38bdf8;
+}
+
+/* Paski postępu */
+.ects-progress-track, .stamina-progress-track {
+  width: 100%;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Płynny gradient paska ECTS */
+.ects-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #d97706 0%, var(--alk-gold) 60%, var(--alk-gold-light) 100%);
+  box-shadow: 0 0 10px var(--alk-gold);
+  border-radius: 999px;
+  transition: width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Płynne przejście gradientowe paska staminy */
+.stamina-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--alk-blue-secondary) 0%, #0284c7 40%, #38bdf8 80%, var(--alk-gold-light) 100%);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+  border-radius: 999px;
+  transition: width 0.12s linear, background 0.3s ease;
+}
+
+.stamina-progress-fill.tired {
+  background: linear-gradient(90deg, #991b1b 0%, #dc2626 50%, #f87171 100%);
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.8);
+}
+
+/* Wskaźnik zagrożenia profesorem i przyciski akcji */
+.hud-actions-zone {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.threat-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 5px 9px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.threat-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--alk-patio-emerald);
+  box-shadow: 0 0 6px var(--alk-patio-emerald);
+  transition: background 0.25s, box-shadow 0.25s;
+}
+
+.threat-indicator.danger {
+  border-color: rgba(239, 68, 68, 0.7);
+  background: rgba(239, 68, 68, 0.15);
+}
+
+.threat-indicator.danger .threat-dot {
+  background: var(--alk-danger-red);
+  box-shadow: 0 0 12px var(--alk-danger-red);
+  animation: alarm-pulse 0.4s infinite alternate;
+}
+
+.threat-indicator.caution .threat-dot {
+  background: var(--alk-gold);
+  box-shadow: 0 0 8px var(--alk-gold);
+}
+
+@keyframes alarm-pulse {
+  from { transform: scale(0.9); opacity: 0.6; }
+  to { transform: scale(1.4); opacity: 1; }
+}
+
+.hud-icon-btn {
+  background: rgba(0, 34, 68, 0.8);
+  border: 1.5px solid var(--alk-gold);
+  color: #fff;
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 15px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.hud-icon-btn:hover {
+  transform: scale(1.08);
+  background: var(--alk-blue-secondary);
+  box-shadow: 0 0 12px var(--alk-gold-glow);
+}
+
+/* ==========================================================================
+   Kontener z canvasem i komiksowy dymek profesora
+   ========================================================================== */
+.canvas-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 800 / 540;
+  background: #020713;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.8),
+    0 0 0 2px rgba(242, 169, 0, 0.35);
+}
+
+#gameCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Komiksowy dymek nad profesorem z animacją wyskakiwania i trójkątnym wskaźnikiem */
+.professor-speech-bubble {
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 90%;
+  min-width: 290px;
+  background: #ffffff;
+  color: #0a1128;
+  border: 3px solid #002244;
+  border-radius: 18px;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 
+    0 12px 28px rgba(0, 0, 0, 0.65),
+    0 0 0 4px var(--alk-gold);
+  z-index: 30;
+  animation: popInBounce 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* Trójkątny wskaźnik dymka (ogonek komiksowy) */
+.professor-speech-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-top: 15px solid #002244;
+}
+
+.professor-speech-bubble::before {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-top: 11px solid #ffffff;
+  z-index: 1;
+}
+
+/* Animacja wyskakiwania komiksowego dymka */
+@keyframes popInBounce {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -25px) scale(0.7);
+  }
+  70% {
+    opacity: 1;
+    transform: translate(-50%, 4px) scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+}
+
+.speech-avatar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.prof-avatar-circle {
+  width: 32px;
+  height: 32px;
+  background: var(--alk-navy);
+  border: 2px solid var(--alk-gold);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.prof-name {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 12px;
+  color: var(--alk-navy);
+}
+
+.speech-quote {
+  font-size: 13px;
+  font-weight: 700;
+  font-style: italic;
+  color: #002244;
+  line-height: 1.35;
+}
+
+/* Dynamiczny Toast (np. +1 ECTS, Kawa) */
+.game-toast {
+  position: absolute;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 34, 68, 0.95);
+  border: 2px solid var(--alk-gold);
+  color: var(--alk-gold-light);
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 800;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6), 0 0 14px var(--alk-gold-glow);
+  pointer-events: none;
+  z-index: 25;
+  animation: popInBounce 0.25s ease-out;
+}
+
+/* ==========================================================================
+   Złote przyciski z animacją powiększenia (Hover Scale)
+   ========================================================================== */
+.btn-primary {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, var(--alk-gold-light) 0%, var(--alk-gold) 60%, #cc8b00 100%);
+  color: var(--alk-navy);
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 16px;
+  letter-spacing: 0.8px;
+  border: 2px solid #ffffff;
+  border-radius: 14px;
+  padding: 15px 24px;
+  cursor: pointer;
+  box-shadow: 
+    0 8px 20px rgba(242, 169, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, filter 0.2s ease;
+  text-decoration: none;
+}
+
+/* Efekt powiększenia przycisku (Hover scale) */
+.btn-primary:hover {
+  transform: scale(1.05);
+  box-shadow: 
+    0 12px 30px rgba(242, 169, 0, 0.7),
+    0 0 20px rgba(255, 199, 64, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  filter: brightness(1.08);
+}
+
+.btn-primary:active {
+  transform: scale(0.97);
+  box-shadow: 0 4px 12px rgba(242, 169, 0, 0.4);
+}
+
+/* ==========================================================================
+   Ekrany modalne (Start, Kampania Wrześniowa, Zaliczenie)
+   ========================================================================== */
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 17, 40, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 16px;
+  animation: fadeIn 0.25s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 630px;
+  background: linear-gradient(180deg, var(--alk-navy) 0%, var(--alk-dark-bg) 100%);
+  border: 2px solid var(--alk-gold);
+  border-radius: 20px;
+  box-shadow: 
+    0 25px 60px rgba(0, 0, 0, 0.9),
+    0 0 35px var(--alk-gold-glow);
+  overflow: hidden;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header-hero {
+  background: linear-gradient(135deg, var(--alk-blue-secondary) 0%, var(--alk-navy) 100%);
+  padding: 22px 24px 18px;
+  border-bottom: 2px solid rgba(242, 169, 0, 0.3);
+  text-align: center;
+}
+
+.sub-uni {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--alk-gold);
+  text-transform: uppercase;
+}
+
+.game-title {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 30px;
+  letter-spacing: 1.5px;
+  color: #ffffff;
+  margin: 4px 0;
+  text-shadow: 0 3px 12px rgba(0, 0, 0, 0.6);
+}
+
+.game-subtitle {
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.modal-body {
+  padding: 18px 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.story-box {
+  background: rgba(0, 34, 68, 0.55);
+  border-left: 4px solid var(--alk-gold);
+  padding: 12px 16px;
+  border-radius: 0 10px 10px 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #e2e8f0;
+}
+
+.game-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.legend-heading {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: var(--alk-gold);
+  text-transform: uppercase;
+}
+
+.legend-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(0, 75, 135, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+
+.legend-glyph {
+  font-size: 22px;
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 34, 68, 0.8);
+  border: 1px solid var(--alk-gold);
+  flex-shrink: 0;
+}
+
+.legend-desc strong {
+  display: block;
+  font-size: 12px;
+  color: #ffffff;
+}
+
+.legend-desc span {
+  font-size: 10px;
+  color: #94a3b8;
+  line-height: 1.3;
+}
+
+.controls-hint-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px dashed rgba(242, 169, 0, 0.35);
+}
+
+.control-key-pill {
+  font-size: 11px;
+  color: #e2e8f0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+kbd {
+  background: var(--alk-navy);
+  border: 1px solid var(--alk-gold);
+  border-bottom: 2px solid #b27b00;
+  color: var(--alk-gold-light);
+  border-radius: 5px;
+  padding: 2px 7px;
+  font-size: 11px;
+  font-weight: 800;
+  font-family: inherit;
+}
+
+.modal-footer {
+  padding: 14px 24px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: center;
+}
+
+/* Modale wyników: Porażka & Zwycięstwo */
+.modal-gameover {
+  border-color: var(--alk-danger-red);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 35px rgba(239, 68, 68, 0.4);
+  text-align: center;
+  padding: 28px 24px;
+}
+
+.modal-victory {
+  border-color: var(--alk-patio-emerald);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(16, 185, 129, 0.4);
+  text-align: center;
+  padding: 28px 24px;
+}
+
+.result-badge {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 12px;
+  letter-spacing: 2px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  margin-bottom: 10px;
+}
+
+.badge-failure {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  border: 1.5px solid rgba(239, 68, 68, 0.6);
+}
+
+.badge-success {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+  border: 1.5px solid rgba(16, 185, 129, 0.6);
+}
+
+.result-title {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 32px;
+  color: #ffffff;
+  margin-bottom: 6px;
+}
+
+.result-subtitle {
+  font-size: 14px;
+  color: #94a3b8;
+  margin-bottom: 20px;
+}
+
+.result-stats-card {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(242, 169, 0, 0.3);
+  border-radius: 14px;
+  padding: 14px;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.stat-column {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-title {
+  font-size: 11px;
+  color: #94a3b8;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.stat-number {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 22px;
+  color: var(--alk-gold);
+}
+
+.score-grade {
+  color: #34d399;
+}
+
+.stat-text {
+  font-size: 11px;
+  font-style: italic;
+  color: #cbd5e1;
+  line-height: 1.35;
+}
+
+.motivation-quote {
+  font-size: 13px;
+  color: #cbd5e1;
+  line-height: 1.55;
+  margin-bottom: 22px;
+}
+
+.victory-accolade {
+  background: rgba(16, 185, 129, 0.12);
+  border: 1.5px solid rgba(16, 185, 129, 0.4);
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 13px;
+  color: #e2e8f0;
+  margin-bottom: 22px;
+  line-height: 1.55;
+}
+
+/* ==========================================================================
+   3. Responsywność (Mobile-first):
+      - Na desktopie (powyżej 768px) ekranowe przyciski sterowania są ukryte
+      - W widokach poniżej 768px (@media) aktywuj wyświetlanie #mobile-controls
+   ========================================================================== */
+#mobile-controls,
+#touch-controls,
+.mobile-controls-container,
+.touch-controls-container {
+  display: none; /* Domyślnie ukryte na PC / dużych ekranach */
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: var(--alk-glass-hud);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 2px solid var(--alk-gold);
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), 0 0 12px var(--alk-gold-glow);
+  touch-action: none;
+}
+
+/* Aktywacja przycisków w widokach poniżej 768px lub na ekranach dotykowych */
+@media (max-width: 768px), (hover: none) and (pointer: coarse) {
+  #mobile-controls,
+  #touch-controls,
+  .mobile-controls-container,
+  .touch-controls-container {
+    display: flex;
+  }
+
+  /* Dostosowanie paska HUD do urządzeń mobilnych */
+  #game-hud {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 8px 12px;
+  }
+
+  .hud-brand-zone {
+    grid-column: span 2;
+    justify-content: space-between;
+  }
+
+  .hud-actions-zone {
+    grid-column: span 2;
+    justify-content: space-between;
+  }
+
+  .legend-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .result-stats-card {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .game-title {
+    font-size: 24px;
+  }
+}
+
+/* Klastry sterowania dotykowego */
+.dpad-cluster {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.dpad-middle-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.dpad-center {
+  width: 48px;
+  height: 48px;
+  background: rgba(0, 34, 68, 0.5);
+  border-radius: 10px;
+}
+
+.dpad-btn {
+  width: 52px;
+  height: 52px;
+  background: linear-gradient(135deg, var(--alk-blue-secondary) 0%, var(--alk-navy) 100%);
+  border: 1.5px solid var(--alk-gold);
+  color: var(--alk-gold-light);
+  border-radius: 12px;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+  touch-action: none;
+  transition: transform 0.08s ease, background 0.08s ease, color 0.08s ease;
+}
+
+.dpad-btn:active, .dpad-btn.pressed {
+  background: var(--alk-gold);
+  color: var(--alk-navy);
+  transform: scale(0.92);
+  box-shadow: 0 0 14px var(--alk-gold);
+}
+
+.action-buttons-cluster {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.action-btn {
+  background: linear-gradient(135deg, var(--alk-blue-secondary) 0%, var(--alk-navy) 100%);
+  border: 2px solid var(--alk-gold);
+  color: var(--alk-gold-light);
+  border-radius: 16px;
+  padding: 14px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6), 0 0 10px var(--alk-gold-glow);
+  touch-action: none;
+  min-width: 95px;
+  min-height: 82px;
+  transition: transform 0.08s ease, filter 0.08s ease, background 0.08s ease;
+}
+
+.action-btn.active, .action-btn:active {
+  background: linear-gradient(135deg, var(--alk-gold-light) 0%, var(--alk-gold) 100%);
+  color: var(--alk-navy);
+  transform: scale(0.92);
+  box-shadow: 0 0 20px var(--alk-gold);
+}
+
+.action-icon {
+  font-size: 24px;
+}
+
+.action-label {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+/* Klasa ukrywania elementów modalnych */
+.hidden {
+  display: none !important;
+}
