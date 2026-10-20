@@ -50,7 +50,7 @@ Gra jest w pełni responsywna – dostosowana zarówno do klawiatury fizycznej n
 
 ## 📂 3. Schemat drzewa plików projektu
 
-Projekt został zbudowany modułowo w czystym standardzie HTML5, CSS3 i Vanilla JavaScript (ES6+):
+Projekt został zbudowany modułowo w czystym standardzie HTML5, CSS3 i Vanilla JavaScript (ES6+), ze **ścieżkami relatywnymi (`./css/style.css`, `./js/...`)**, dzięki czemu działa od razu na **GitHub Pages** (w podkatalogu repozytorium `https://<user>.github.io/<repo>/`):
 
 ```text
 kozminski-escape/
